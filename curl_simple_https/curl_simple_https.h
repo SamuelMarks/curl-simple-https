@@ -7,7 +7,7 @@ extern "C" {
 
 #include <curl/curl.h>
 
-#include "CurlSimpleHttps_export.h"
+#include "curl_simple_https_export.h"
 
 struct ServerResponse {
     CURLcode code;
@@ -16,9 +16,9 @@ struct ServerResponse {
     const char *response;
 };
 
-struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_post(CURLU *);
-struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_put(CURLU *);
-struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_get(CURLU *);
+struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *);
+struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *);
+struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *);
 
 #ifdef    __cplusplus
 }

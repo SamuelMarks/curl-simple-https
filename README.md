@@ -26,7 +26,6 @@ Or do the same with your system package manager, `conan`, or whatever else you u
 
     $ mkdir 'cmake-build-debug' && cd "$_"
     $ cmake -DCMAKE_TOOLCHAIN_FILE='[root]/vcpkg/scripts/buildsystems/vcpkg.cmake' \
-            -DADOBE_PP_SDK='[path_to_pp_sdk]' \
             -DCMAKE_BUILD_TYPE='Debug' \
             ..
     $ cmake --build .

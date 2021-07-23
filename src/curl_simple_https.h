@@ -16,9 +16,9 @@ struct ServerResponse {
     const char *response;
 };
 
-struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *);
-struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *);
-struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *);
+struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_post(CURLU *);
+struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_put(CURLU *);
+struct ServerResponse CURLSIMPLEHTTPS_EXPORT https_get(CURLU *);
 
 #ifdef    __cplusplus
 }

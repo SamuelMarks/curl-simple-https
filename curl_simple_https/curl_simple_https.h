@@ -13,7 +13,7 @@ struct ServerResponse {
     CURLcode code;
     /* What else would be good? - Headers? */
     long status_code;
-    const char *response;
+    const char *body;
 };
 
 struct ServerResponse CURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *);

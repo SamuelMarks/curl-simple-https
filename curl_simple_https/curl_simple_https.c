@@ -68,7 +68,7 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*)) {
     res = curl_easy_perform(curl);
     _res_error_handle;
 
-    result.response = chunk.memory;
+    result.body = chunk.memory;
     long response_code;
     curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
     result.status_code = response_code;

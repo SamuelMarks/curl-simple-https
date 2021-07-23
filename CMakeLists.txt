@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 project(CurlSimpleHttps VERSION 0.0.0 LANGUAGES C)
 string(TOLOWER "${PROJECT_NAME}" PROJECT_LOWER_NAME)
-message(PROJECT_NAME = "${PROJECT_NAME}")
+
 set(CMAKE_C_STANDARD 90)
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
@@ -12,6 +12,12 @@ if (BUILD_SHARED_LIBS)
 else ()
     set(LIBRARY_TYPE_FLAG "STATIC")
 endif ()
+
+# control where the static and shared libraries are built so that on windows
+# we don't need to tinker with the path to run the executable
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 add_library("${PROJECT_LOWER_NAME}_compiler_flags" INTERFACE)
 target_compile_features("${PROJECT_LOWER_NAME}_compiler_flags" INTERFACE "c_std_90")
@@ -30,6 +36,11 @@ set(LIBRARY_NAME_0  curl_simple_https)
 
 add_subdirectory("${LIBRARY_NAME_0}")
 
+# configure a header file to pass the version number only
+configure_file(
+        "${PROJECT_NAME}Config.h.in"
+        "${PROJECT_NAME}Config.h"
+)
 
 install(
         FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h"
@@ -52,44 +63,43 @@ set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_LIST_DIR}/README.txt")
 set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_LIST_DIR}/Welcome.txt")
 set(CPACK_PACKAGE_CONTACT "https://github.com/SamuelMarks/curl-simple-https")
-message(CPACK_PACKAGE_VERSION_MAJOR = "${CPACK_PACKAGE_VERSION_MAJOR}")
+
 include(CPack)
 include(CMakePackageConfigHelpers)
 
+# install the configuration targets
+install(
+        EXPORT "${LIBRARY_NAME_0}Targets"
+        FILE "${LIBRARY_NAME_0}Targets.cmake"
+        DESTINATION "lib/cmake/${LIBRARY_NAME_0}"
+)
 
-    # install the configuration targets
-    install(
-            EXPORT "${LIBRARY_NAME_0}Targets"
-            FILE "${LIBRARY_NAME_0}Targets.cmake"
-            DESTINATION "lib/cmake/${LIBRARY_NAME_0}"
-    )
+# generate the config file that is includes the exports
+configure_package_config_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Config.cmake"
+        INSTALL_DESTINATION "lib/cmake/example"
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
 
-    # generate the config file that is includes the exports
-    configure_package_config_file(
-            "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
-            "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Config.cmake"
-            INSTALL_DESTINATION "lib/cmake/example"
-            NO_SET_AND_CHECK_MACRO
-            NO_CHECK_REQUIRED_COMPONENTS_MACRO
-    )
+# generate the version file for the config file
+write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}ConfigVersion.cmake"
+        VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}"
+        COMPATIBILITY AnyNewerVersion
+)
 
-    # generate the version file for the config file
-    write_basic_package_version_file(
-            "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}ConfigVersion.cmake"
-            VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}"
-            COMPATIBILITY AnyNewerVersion
-    )
+# install the configuration file
+install(
+        FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Config.cmake"
+        DESTINATION "lib/cmake/${LIBRARY_NAME_0}"
+)
 
-    # install the configuration file
-    install(
-            FILES
-            "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Config.cmake"
-            DESTINATION "lib/cmake/${LIBRARY_NAME_0}"
-    )
-
-    # generate the export targets for the build tree
-    # needs to be after the install(TARGETS ) command
-    export(
-            EXPORT "${LIBRARY_NAME_0}Targets"
-            FILE "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Targets.cmake"
-    )
+# generate the export targets for the build tree
+# needs to be after the install(TARGETS ) command
+export(
+        EXPORT "${LIBRARY_NAME_0}Targets"
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Targets.cmake"
+)

@@ -55,7 +55,6 @@ jobs:
           cmakeGenerator: 'Ninja'
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeAppendedArgs: '-DSTANDALONE_MODE=1'
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
@@ -65,10 +64,9 @@ jobs:
         with:
           cmakeGenerator: 'Ninja'
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
-          cmakeAppendedArgs: '-DSTANDALONE_MODE=1'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
-#          buildWithCMakeArgs: '-- -v'
+          buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
       - name: Run CMake+Ninja with triplet (bash)
@@ -79,7 +77,6 @@ jobs:
           cmakeGenerator: 'Ninja'
           cmakeListsOrSettingsJson: 'CMakeListsTxtAdvanced'
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          cmakeAppendedArgs: '-DSTANDALONE_MODE=1'
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
           vcpkgTriplet: ${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}

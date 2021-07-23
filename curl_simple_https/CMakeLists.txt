@@ -10,6 +10,11 @@ set(Source_Files "curl_simple_https.c")
 source_group("Source Files" FILES "${Source_Files}")
 
 add_library("${LIBRARY_NAME}" "${LIBRARY_TYPE_FLAG}" "${Header_Files}" "${Source_Files}")
+target_include_directories(
+        "${LIBRARY_NAME}"
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+)
 
 find_package(CURL CONFIG REQUIRED)
 target_link_libraries(

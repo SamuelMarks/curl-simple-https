@@ -54,7 +54,7 @@ int main(void) {
     rc = curl_url_set(urlp, CURLUPART_QUERY, "client_secret=" CLIENT_SECRET, CURLU_APPENDQUERY);
     if(rc != CURLUE_OK) return EXIT_FAILURE;
 
-    struct ServerResponse response = https_post(&urlp);
+    struct ServerResponse response = https_post(&urlp, /* extra headers */ NULL);
     if (response.code == CURLE_OK) {
         printf("status_code: %l\n# response\n%s", response.code, response.body);
         return EXIT_SUCCESS;

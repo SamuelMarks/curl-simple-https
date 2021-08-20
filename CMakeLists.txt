@@ -32,9 +32,10 @@ target_compile_options(
         "$<${msvc}:$<BUILD_INTERFACE:-W3;-WX;-Zi;-permissive->>"
 )
 
-set(LIBRARY_NAME_0  curl_simple_https)
+set(LIBRARY_NAME_0 libcurl_simple_https)
 
 add_subdirectory("${LIBRARY_NAME_0}")
+add_subdirectory("${LIBRARY_NAME_0}/curl_simple_https")
 
 # configure a header file to pass the version number only
 configure_file(

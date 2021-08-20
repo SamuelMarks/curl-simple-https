@@ -32,13 +32,13 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 }
 
 struct ServerResponse
-https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*)) {
-#define _res_error_handle if(res != CURLE_OK) {\
-        fprintf(stderr, "curl operation failed: %s\n",\
-                curl_easy_strerror(res));\
-        result.code = CURLE_FAILED_INIT;\
-        goto cleanup;\
-    }
+https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *headers) {
+#define _res_error_handle if (res != CURLE_OK) {        \
+        fprintf(stderr, "curl operation failed: %s\n", \
+                curl_easy_strerror(res));              \
+        result.code = CURLE_FAILED_INIT;               \
+        goto cleanup;                                  \
+    } else
 
     struct ServerResponse result;
     struct MemoryStruct chunk;
@@ -61,7 +61,9 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*)) {
     curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
     curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+    if (headers != NULL) curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
     if (curl_modifier != NULL) curl_modifier(curl);
 
@@ -97,17 +99,40 @@ make_request_put(CURL *curl) {
     return curl;
 }
 
-struct ServerResponse
-https_post(CURLU *urlp) {
-    return https_wrapper(urlp, make_request_post);
+struct curl_slist * set_json_headers(struct curl_slist *headers) {
+    headers = curl_slist_append(headers, "Accept: application/json");
+    headers = curl_slist_append(headers, "Content-Type: application/json");
+    headers = curl_slist_append(headers, "charset: utf-8");
+    return headers;
 }
 
 struct ServerResponse
-https_put(CURLU *urlp) {
-    return https_wrapper(urlp, make_request_put);
+https_post(CURLU *urlp, struct curl_slist *headers) {
+    return https_wrapper(urlp, make_request_post, headers);
 }
 
 struct ServerResponse
-https_get(CURLU *urlp) {
-    return https_wrapper(urlp, NULL);
+https_put(CURLU *urlp, struct curl_slist *headers) {
+
+    return https_wrapper(urlp, make_request_put, headers);
+}
+
+struct ServerResponse
+https_get(CURLU *urlp, struct curl_slist *headers) {
+    return https_wrapper(urlp, NULL, headers);
+}
+
+struct ServerResponse
+https_json_post(CURLU *urlp, struct curl_slist *headers) {
+    return https_wrapper(urlp, make_request_post, set_json_headers(headers));
+}
+
+struct ServerResponse
+https_json_put(CURLU *urlp, struct curl_slist *headers) {
+    return https_wrapper(urlp, make_request_put, set_json_headers(headers));
+}
+
+struct ServerResponse
+https_json_get(CURLU *urlp, struct curl_slist *headers) {
+    return https_wrapper(urlp, NULL, set_json_headers(headers));
 }

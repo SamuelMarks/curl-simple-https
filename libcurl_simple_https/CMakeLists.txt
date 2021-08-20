@@ -19,7 +19,7 @@ target_include_directories(
 find_package(CURL CONFIG REQUIRED)
 target_link_libraries(
         "${LIBRARY_NAME}"
-        PRIVATE
+        PUBLIC
         CURL::libcurl
 )
 

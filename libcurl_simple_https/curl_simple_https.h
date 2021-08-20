@@ -17,6 +17,8 @@ struct ServerResponse {
     const char *body;
 };
 
+void LIBCURL_SIMPLE_HTTPS_EXPORT debug_response(struct ServerResponse *response);
+
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *, struct curl_slist *);

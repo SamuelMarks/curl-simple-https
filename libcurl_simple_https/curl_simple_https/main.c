@@ -18,6 +18,14 @@ bool is_url(const char *maybe_url) {
 }
 
 
+struct ServerResponse (*get_simple_curl_function(const struct DocoptArgs *args))(CURLU *,struct curl_slist *) {
+    if (args->POST) return args->json ? https_json_post : https_post;
+    else if (args->PUT) return args->json ? https_json_put : https_put;
+    /*else if (args.GET)*/
+    return args->json ? https_json_get : https_get;
+}
+
+
 int main(int argc, char *argv[]) {
     struct DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ CurlSimpleHttps_VERSION);
     CURLUcode rc;
@@ -38,15 +46,13 @@ int main(int argc, char *argv[]) {
                 else if (is_url(argv[argc - 1]))
                     args.url = argv[argc - 1];
         }
-        printf("`args.url`:\t\"%s\"\n", args.url);
     }
 
     url = curl_url();
-    rc = curl_url_set(url, CURLUPART_URL, "https://google.com" /*args.url*/, 0);
-    /*if (rc != CURLE_OK) return E_OUTOFMEMORY;
-    rc = curl_url_set(url, CURLUPART_SCHEME, "https", 0);*/
+    rc = curl_url_set(url, CURLUPART_URL, args.url, 0);
     if (rc == CURLE_OK) {
-        struct ServerResponse response = https_get(url, NULL);
+        struct ServerResponse response = get_simple_curl_function(&args)(url, NULL);
+        debug_response(&response);
         puts(response.body);
         curl_url_cleanup(url);
         return EXIT_SUCCESS;

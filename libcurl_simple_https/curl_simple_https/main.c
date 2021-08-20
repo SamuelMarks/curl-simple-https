@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
     rc = curl_url_set(url, CURLUPART_URL, args.url, 0);
     if (rc == CURLE_OK) {
         struct ServerResponse response = get_simple_curl_function(&args)(url, NULL);
-        debug_response(&response);
+        /* debug_response(&response); */
         puts(response.body);
         curl_url_cleanup(url);
         return EXIT_SUCCESS;

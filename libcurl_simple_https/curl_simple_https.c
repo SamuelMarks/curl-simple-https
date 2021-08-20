@@ -50,7 +50,7 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
         goto cleanup;                                  \
     } else
 
-    struct ServerResponse result;
+    struct ServerResponse result = {CURLE_OK, NULL, 0L, NULL};
     struct MemoryStruct chunk;
     CURLcode res = CURLE_OK;
     CURL *curl;
@@ -72,11 +72,11 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
     curl_easy_setopt(curl, CURLOPT_CURLU, urlp);
     curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    /* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
     curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
     if (headers != NULL) curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
     if (curl_modifier != NULL) curl_modifier(curl);
 
     res = curl_easy_perform(curl);

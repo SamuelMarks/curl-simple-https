@@ -16,11 +16,13 @@ target_include_directories(
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-find_package(CURL CONFIG REQUIRED)
+include(../cmake/FindCurlCustom.cmake)
+get_curl(CURL_LINK_LIBRARIES)
+
 target_link_libraries(
         "${LIBRARY_NAME}"
         PUBLIC
-        CURL::libcurl
+        "${CURL_LINK_LIBRARIES}"
 )
 
 set_target_properties(

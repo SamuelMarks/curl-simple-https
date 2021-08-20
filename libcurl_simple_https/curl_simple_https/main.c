@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <curl_simple_https.h>
 #include <CurlSimpleHttpsConfig.h>
@@ -50,6 +51,6 @@ int main(int argc, char *argv[]) {
         curl_url_cleanup(url);
         return EXIT_SUCCESS;
     } else {
-        return E_OUTOFMEMORY;
+        return CURLE_OUT_OF_MEMORY;
     }
 }

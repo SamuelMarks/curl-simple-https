@@ -62,6 +62,7 @@ int main(void) {
     if(rc != CURLUE_OK) return EXIT_FAILURE;
 
     struct ServerResponse response = https_post(&urlp, /* extra headers */ NULL);
+    curl_url_cleanup(urlp);
     if (response.code == CURLE_OK) {
         printf("status_code: %l\n# response\n%s", response.code, response.body);
         return EXIT_SUCCESS;

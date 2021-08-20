@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "curl_simple_https.h"
 
@@ -82,7 +83,6 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
 
 cleanup:
     curl_easy_cleanup(curl);
-    curl_url_cleanup(urlp);
 
     /* TODO: Stop calling this all the time */
     curl_global_cleanup();

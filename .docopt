@@ -1,17 +1,15 @@
-acquire: The core for your package manager, minus the dependency graph components. Download, verify, and extract.
+curl_simple_https: Simpler curl interface that only does HTTPS and has secure defaults
 
 Usage:
-  acquire --check --directory=<d> --hash=<h> --checksum=<sha> <url>...
-  acquire --directory=<d> --hash=<h> --checksum=<sha> <url>...
-  acquire --output=<f> <url>...
-  acquire --help
-  acquire --version
+  curl_simple_https <url>...
+  curl_simple_https POST <url>...
+  curl_simple_https GET <url>...
+  curl_simple_https PUT <url>...
+  curl_simple_https --json <url>...
+  curl_simple_https --help
+  curl_simple_https --version
 
 Options:
   -h --help               Show this screen.
   --version               Show version.
-  --check                 Check if already downloaded.
-  --hash=<h>              Hash to verify.
-  --checksum=<sha>        Checksum algorithm, e.g., SHA256 or SHA512.
-  -d=<d>, --directory=<d> Location to download files to.
-  -o=<f>, --output=<f>    Output file. If not specified, will derive from URL.
+  --json                  JSON request & response

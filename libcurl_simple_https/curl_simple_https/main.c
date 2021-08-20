@@ -41,8 +41,10 @@ int main(int argc, char *argv[]) {
     }
 
     url = curl_url();
-    rc = curl_url_set(url, CURLUPART_URL, args.url, 0);
-    if (!rc) {
+    rc = curl_url_set(url, CURLUPART_URL, "https://google.com" /*args.url*/, 0);
+    /*if (rc != CURLE_OK) return E_OUTOFMEMORY;
+    rc = curl_url_set(url, CURLUPART_SCHEME, "https", 0);*/
+    if (rc == CURLE_OK) {
         struct ServerResponse response = https_get(url, NULL);
         puts(response.body);
         curl_url_cleanup(url);

@@ -33,7 +33,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
 
 struct ServerResponse
 https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *headers) {
-#define _res_error_handle if (res != CURLE_OK) {        \
+#define _res_error_handle if (res != CURLE_OK) {       \
         fprintf(stderr, "curl operation failed: %s\n", \
                 curl_easy_strerror(res));              \
         result.code = CURLE_FAILED_INIT;               \
@@ -43,6 +43,8 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
     struct ServerResponse result;
     struct MemoryStruct chunk;
     CURLcode res = CURLE_OK;
+    CURL *curl;
+
     chunk.memory = malloc(1);  /* will be grown as needed by realloc above */
     chunk.size = 0;    /* no data at this point */
 
@@ -50,7 +52,7 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
     res = curl_global_init(CURL_GLOBAL_DEFAULT);
     _res_error_handle;
 
-    CURL *curl = curl_easy_init();
+    curl = curl_easy_init();
     if(!curl) {
         fprintf(stderr, "curl_easy_init() failed: %s\n",
                 curl_easy_strerror(res));
@@ -71,9 +73,11 @@ https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL*), struct curl_slist *hea
     _res_error_handle;
 
     result.body = chunk.memory;
-    long response_code;
-    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
-    result.status_code = response_code;
+    {
+        long response_code;
+        curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+        result.status_code = response_code;
+    }
     result.code = res;
 
 cleanup:

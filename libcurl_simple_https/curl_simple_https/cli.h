@@ -3,6 +3,8 @@
 
 #include <stddef.h>
 
+#include "curl_simple_https_lib_export.h"
+
 #if defined(__STDC__) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
 #include <stdbool.h>
@@ -78,7 +80,7 @@ typedef size_t bool;
 #ifdef NCARGS
 #define ARG_MAX NCARGS
 #else
-#define ARG_MAX 131072
+#define ARG_MAX 1024
 #endif
 #endif
 
@@ -86,20 +88,18 @@ struct DocoptArgs {
     
     /* arguments */
     char *url;
+    char *GET;
+    char *POST;
+    char *PUT;
     /* options without arguments */
-    size_t check;
     size_t help;
+    size_t json;
     size_t version;
-    /* options with arguments */
-    char *checksum;
-    char *directory;
-    char *hash;
-    char *output;
     /* special */
     const char *usage_pattern;
-    const char *help_message[17];
+    const char *help_message[15];
 };
 
-struct DocoptArgs docopt(int, char *[], bool, const char *);
+struct DocoptArgs CURL_SIMPLE_HTTPS_LIB_EXPORT docopt(int, char *[], bool, const char *);
 
 #endif

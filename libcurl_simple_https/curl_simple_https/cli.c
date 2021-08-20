@@ -46,9 +46,11 @@ struct Tokens {
 
 const char usage_pattern[] =
         "Usage:\n"
-        "  curl_simple_https --check --directory=<d> --hash=<h> --checksum=<sha> <url>...\n"
-        "  curl_simple_https --directory=<d> --hash=<h> --checksum=<sha> <url>...\n"
-        "  curl_simple_https --output=<f> <url>...\n"
+        "  curl_simple_https <url>...\n"
+        "  curl_simple_https POST <url>...\n"
+        "  curl_simple_https GET <url>...\n"
+        "  curl_simple_https PUT <url>...\n"
+        "  curl_simple_https --json <url>...\n"
         "  curl_simple_https --help\n"
         "  curl_simple_https --version";
 
@@ -91,7 +93,7 @@ int parse_doubledash(struct Tokens *ts, struct Elements *elements) {
 
 int parse_long(struct Tokens *ts, struct Elements *elements) {
     int i;
-    size_t len_prefix;
+    int len_prefix;
     int n_options = elements->n_options;
     char *eq = strchr(ts->current, '=');
     struct Option *option;
@@ -231,35 +233,19 @@ int elems_to_args(struct Elements *elements, struct DocoptArgs *args,
     for (i = 0; i < elements->n_options; i++) {
         option = &elements->options[i];
         if (help && option->value && strcmp(option->olong, "--help") == 0) {
-            for (j = 0; j < 17; j++)
+            for (j = 0; j < 15; j++)
                 puts(args->help_message[j]);
             return EXIT_FAILURE;
         } else if (version && option->value &&
                    strcmp(option->olong, "--version") == 0) {
             puts(version);
             return EXIT_FAILURE;
-        } else if (strcmp(option->olong, "--check") == 0) {
-            args->check = option->value;
         } else if (strcmp(option->olong, "--help") == 0) {
             args->help = option->value;
+        } else if (strcmp(option->olong, "--json") == 0) {
+            args->json = option->value;
         } else if (strcmp(option->olong, "--version") == 0) {
             args->version = option->value;
-        } else if (strcmp(option->olong, "--checksum") == 0) {
-            if (option->argument) {
-                args->checksum = (char *) option->argument;
-            }
-        } else if (strcmp(option->olong, "--directory") == 0) {
-            if (option->argument) {
-                args->directory = (char *) option->argument;
-            }
-        } else if (strcmp(option->olong, "--hash") == 0) {
-            if (option->argument) {
-                args->hash = (char *) option->argument;
-            }
-        } else if (strcmp(option->olong, "--output") == 0) {
-            if (option->argument) {
-                args->output = (char *) option->argument;
-            }
         }
     }
     /* commands */
@@ -274,6 +260,15 @@ int elems_to_args(struct Elements *elements, struct DocoptArgs *args,
         if (strcmp(argument->name, "<url>") == 0) {
             args->url = (char *) argument->value;
         }
+         else if (strcmp(argument->name, "GET") == 0) {
+            args->GET = (char *) argument->value;
+        }
+         else if (strcmp(argument->name, "POST") == 0) {
+            args->POST = (char *) argument->value;
+        }
+         else if (strcmp(argument->name, "PUT") == 0) {
+            args->PUT = (char *) argument->value;
+        }
     }
     return EXIT_SUCCESS;
 }
@@ -285,46 +280,43 @@ int elems_to_args(struct Elements *elements, struct DocoptArgs *args,
 
 struct DocoptArgs docopt(int argc, char *argv[], const bool help, const char *version) {
     struct DocoptArgs args = {
-        NULL, 0, 0, 0, NULL, NULL, NULL, NULL,
+        NULL, NULL, NULL, NULL, 0, 0, 0,
             usage_pattern,
-            { "curl_simple_https: Simpler curl interface that only does HTTPS and has secure defaults.",
+            { "curl_simple_https: Simpler curl interface that only does HTTPS and has secure defaults",
               "",
               "Usage:",
-              "  curl_simple_https --check --directory=<d> --hash=<h> --checksum=<sha> <url>...",
-              "  curl_simple_https --directory=<d> --hash=<h> --checksum=<sha> <url>...",
-              "  curl_simple_https --output=<f> <url>...",
+              "  curl_simple_https <url>...",
+              "  curl_simple_https POST <url>...",
+              "  curl_simple_https GET <url>...",
+              "  curl_simple_https PUT <url>...",
+              "  curl_simple_https --json <url>...",
               "  curl_simple_https --help",
               "  curl_simple_https --version",
               "",
               "Options:",
               "  -h --help               Show this screen.",
               "  --version               Show version.",
-              "  --check                 Check if already downloaded.",
-              "  --hash=<h>              Hash to verify.",
-              "  --checksum=<sha>        Checksum algorithm, e.g., SHA256 or SHA512.",
-              "  -d=<d>, --directory=<d> Location to download files to.",
-              "  -o=<f>, --output=<f>    Output file. If not specified, will derive from URL."}
+              "  --json                  JSON request & response"}
     };
     struct Command commands[] = {NULL
     };
     struct Argument arguments[] = {
-        {"<url>", NULL, NULL}
+        {"<url>", NULL, NULL},
+        {"GET", NULL, NULL},
+        {"POST", NULL, NULL},
+        {"PUT", NULL, NULL}
     };
     struct Option options[] = {
-        {NULL, "--check", 0, 0, NULL},
         {"-h", "--help", 0, 0, NULL},
-        {NULL, "--version", 0, 0, NULL},
-        {NULL, "--checksum", 1, 0, NULL},
-        {"-d", "--directory", 1, 0, NULL},
-        {NULL, "--hash", 1, 0, NULL},
-        {"-o", "--output", 1, 0, NULL}
+        {NULL, "--json", 0, 0, NULL},
+        {NULL, "--version", 0, 0, NULL}
     };
     struct Elements elements;
     int return_code = EXIT_SUCCESS;
 
     elements.n_commands = 0;
-    elements.n_arguments = 1;
-    elements.n_options = 7;
+    elements.n_arguments = 4;
+    elements.n_options = 3;
     elements.commands = commands;
     elements.arguments = arguments;
     elements.options = options;

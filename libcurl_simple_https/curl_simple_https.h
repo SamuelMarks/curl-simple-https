@@ -19,16 +19,23 @@ struct ServerResponse {
 
 void LIBCURL_SIMPLE_HTTPS_EXPORT debug_response(struct ServerResponse *response);
 
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *, struct curl_slist *);
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *, const char *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *, const char *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *, struct curl_slist *);
 
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_post(CURLU *, struct curl_slist *);
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_put(CURLU *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_post(CURLU *, const char *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_put(CURLU *, const char *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_get(CURLU *, struct curl_slist *);
 
-struct curl_slist * LIBCURL_SIMPLE_HTTPS_EXPORT set_json_headers(struct curl_slist *);
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_wrapper(CURLU *, CURL *(*)(CURL*), struct curl_slist *);
+LIBCURL_SIMPLE_HTTPS_EXPORT
+CURL * make_request_post(CURL *);
+
+LIBCURL_SIMPLE_HTTPS_EXPORT
+CURL * make_request_put(CURL *);
+
+LIBCURL_SIMPLE_HTTPS_EXPORT
+struct curl_slist * set_json_headers(struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_wrapper(CURLU *, CURL *(*)(CURL*), const char *, struct curl_slist *);
 
 #ifdef    __cplusplus
 }

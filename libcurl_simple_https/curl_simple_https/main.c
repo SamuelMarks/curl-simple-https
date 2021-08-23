@@ -18,7 +18,7 @@ bool is_url(const char *maybe_url) {
 }
 
 
-struct ServerResponse (*get_simple_curl_function(const struct DocoptArgs *args))(CURLU *,struct curl_slist *) {
+struct ServerResponse (*get_simple_curl_function(const struct DocoptArgs *args))(CURLU *,const char*,struct curl_slist *) {
     if (args->POST) return args->json ? https_json_post : https_post;
     else if (args->PUT) return args->json ? https_json_put : https_put;
     /*else if (args.GET)*/
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     url = curl_url();
     rc = curl_url_set(url, CURLUPART_URL, args.url, 0);
     if (rc == CURLE_OK) {
-        struct ServerResponse response = get_simple_curl_function(&args)(url, NULL);
+        struct ServerResponse response = get_simple_curl_function(&args)(url, NULL, NULL);
         /* debug_response(&response); */
         puts(response.body);
         curl_url_cleanup(url);

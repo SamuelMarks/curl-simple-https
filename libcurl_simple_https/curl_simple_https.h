@@ -21,11 +21,11 @@ void LIBCURL_SIMPLE_HTTPS_EXPORT debug_response(struct ServerResponse *response)
 
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_post(CURLU *, const char *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_put(CURLU *, const char *, struct curl_slist *);
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_get(CURLU *, const char *, struct curl_slist *);
 
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_post(CURLU *, const char *, struct curl_slist *);
 struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_put(CURLU *, const char *, struct curl_slist *);
-struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_get(CURLU *, struct curl_slist *);
+struct ServerResponse LIBCURL_SIMPLE_HTTPS_EXPORT https_json_get(CURLU *, const char *, struct curl_slist *);
 
 LIBCURL_SIMPLE_HTTPS_EXPORT
 CURL * make_request_post(CURL *);

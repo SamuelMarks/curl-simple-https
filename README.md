@@ -78,6 +78,7 @@ int main(void) {
   - CTest
   - CPack
   - More docs
+  - Headers support (input & output)
 
 ---
 

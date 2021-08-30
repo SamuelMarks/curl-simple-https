@@ -80,6 +80,10 @@ int main(void) {
   - More docs
   - Headers support (input & output)
 
+## See also
+
+-  https://github.com/offscale/libacquire
+
 ---
 
 ## License

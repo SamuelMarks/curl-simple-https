@@ -1,13 +1,13 @@
-# Originally from https://github.com/lukka/CppBuildTasks-Validation/blob/116611c/.github/workflows/hosted-advanced.yml
+# From https://github.com/lukka/CppBuildTasks-Validation/blob/116611c/.github/workflows/hosted-advanced-setup-vcpkg.yml
 # Copyright (c) 2019-2020-2021 Luca Cappa
 # Released under the term specified in file LICENSE.txt
 # SPDX short identifier: MIT
-name: build and test
+name: build-and-test
 on: [push]
 
 jobs:
   job:
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }}-hosted-advanced
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -36,19 +36,36 @@ jobs:
           submodules: true
 
       - uses: lukka/get-cmake@latest
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
-      - name: Restore artifacts, or Run vcpkg, build and cache artifacts
-        uses: lukka/run-vcpkg@v7.4
+      - name: Set vcpkg's response file path used as part of cache's key.
+        uses: lukka/set-shell-env@master
+        with:
+          VCPKGRESPONSEFILE: ${{ github.workspace }}/vcpkg_${{ matrix.triplet }}.txt
+          VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
+          filter: ^VCPKG.*
+      - name: Restore artifacts, or setup vcpkg (do not install any package)
+        uses: lukka/run-vcpkg@main
         id: runvcpkg
         with:
-          vcpkgArguments: '${{ matrix.vcpkgPackages }}'
+          setupOnly: true
           vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
-          vcpkgTriplet: '${{ matrix.triplet }}'
-          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
-      - name: Prints output of run-vcpkg's task
-        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}' "
+          vcpkgGitCommitId: '${{ matrix.vcpkgCommitId}}'
+          # Ensure the cache key changes any time the content of the response file changes.
+          appendedCacheKey: ${{ hashFiles( env.VCPKGRESPONSEFILE ) }}
+      - run: |
+          $VCPKG_ROOT/vcpkg install @$VCPKGRESPONSEFILE --clean-after-build
+        shell: bash
+        name: Run vcpkg in a inline script in this workflow.
+      - name: Prints output of run-vcpkg's action
+        run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_TRIPLET_OUT }}'"
+      - name: Run CMake with Ninja Multi-Config
+        uses: lukka/run-cmake@main
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildDirectory: '${{ runner.workspace }}/b/ninjaMultiConfig'
+          cmakeAppendedArgs: '"-GNinja Multi-Config" -DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET }} '
+          buildWithCMake: true
       - name: Run CMake+EnvVar (Un*x)
         if: "!contains( matrix.os, 'windows')"
         uses: lukka/run-cmake@main
@@ -57,17 +74,28 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
           buildDirectory: '${{ runner.workspace }}/b/envvar_ninja'
-          cmakeAppendedArgs: '-GNinja'
+          cmakeAppendedArgs: '-GNinja -DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET }} -DCMAKE_TOOLCHAIN_FILE=${ANDROID_HOME}/ndk-bundle/build/cmake/android.toolchain.cmake'
+          buildWithCMake: false
+      - name: Run CMake+EnvVar (Win)
+        if: "contains( matrix.os, 'windows')"
+        uses: lukka/run-cmake@main
+        with:
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          useVcpkgToolchainFile: true
+          buildDirectory: '${{ runner.workspace }}/b/envvar_ninja'
+          cmakeAppendedArgs: '-GNinja -DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET }} -DCMAKE_TOOLCHAIN_FILE=%ANDROID_NDK_HOME%/build/cmake/android.toolchain.cmake'
           buildWithCMake: false
       - name: Run CMake+Ninja
         uses: lukka/run-cmake@main
         id: runcmake
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
           useVcpkgToolchainFile: true
           buildWithCMakeArgs: '-- -v'
           buildDirectory: '${{ runner.workspace }}/b/ninja/'
-          cmakeAppendedArgs: '-G Ninja '
+          cmakeAppendedArgs: '-GNinja -DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET }}'
       - name: Run CMake+VS
         uses: lukka/run-cmake@main
         if: contains( matrix.os, 'windows')
@@ -76,7 +104,4 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           useVcpkgToolchainFile: true
           buildDirectory: '${{ runner.workspace }}/b/vs16'
-          cmakeAppendedArgs: '-G"Visual Studio 16 2019" -Ax64'
-      - name: dir
-        run: find $RUNNER_WORKSPACE
-        shell: bash
+          cmakeAppendedArgs: '"-GVisual Studio 16 2019" -Ax64 -DVCPKG_TARGET_TRIPLET=${{ env.VCPKG_DEFAULT_TRIPLET }} '

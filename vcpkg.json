@@ -1,0 +1,7 @@
+{
+  "name": "curl-simple-https",
+  "version-string": "0.0.0",
+  "dependencies": [
+    "curl"
+  ]
+}

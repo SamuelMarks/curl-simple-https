@@ -20,6 +20,13 @@ set(LIBRARY_NAME "${EXEC_NAME}_lib")
 
 add_library("${LIBRARY_NAME}" "${Header_Files}" "${Source_Files}")
 
+target_include_directories(
+        "${LIBRARY_NAME}"
+        PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+        "$<INSTALL_INTERFACE:include>"
+)
+
 target_link_libraries("${LIBRARY_NAME}" INTERFACE "${PROJECT_LOWER_NAME}_compiler_flags")
 
 set_target_properties(

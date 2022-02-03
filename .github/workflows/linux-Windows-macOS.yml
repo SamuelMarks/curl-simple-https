@@ -22,9 +22,9 @@ jobs:
         run: brew install curl
         if: matrix.os == 'macos-latest'
 
-      - name: Install dependencies for macOS
-        run: brew install curl
-        if: matrix.os == 'macos-latest'
+      - name: Install dependencies for Ubuntu
+        run: sudo apt-get install -y libcurl4-openssl-dev
+        if: matrix.os == 'ubuntu-latest'
 
       - name: mkdir
         run: mkdir build

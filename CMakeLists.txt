@@ -47,7 +47,7 @@ endif (BUILD_CLI)
 
 # configure a header file to pass the version number only
 configure_file(
-        "${PROJECT_NAME}Config.h.in"
+        "${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
         "${PROJECT_NAME}Config.h"
 )
 
@@ -62,15 +62,15 @@ set(CPACK_PACKAGE_VENDOR "SamuelMarks")
 set(CPACK_PACKAGE_DESCRIPTION "Very simple HTTPS interface built atop libcurl.")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}")
 if (APPLE)
-    set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist")
-    set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist")
-    set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/CustomVolumeIcon.icns")
+    set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Info.plist")
+    set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Info.plist")
+    set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CustomVolumeIcon.icns")
 endif (APPLE)
-set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/License.txt")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/License.txt")
 set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
-set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_LIST_DIR}/README.txt")
-set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_LIST_DIR}/Welcome.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/cmake/README.txt")
+set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Welcome.txt")
 set(CPACK_PACKAGE_CONTACT "https://github.com/SamuelMarks/curl-simple-https")
 
 include(CPack)
@@ -85,7 +85,7 @@ install(
 
 # generate the config file that is includes the exports
 configure_package_config_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+        "${CMAKE_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME_0}Config.cmake"
         INSTALL_DESTINATION "lib/cmake/example"
         NO_SET_AND_CHECK_MACRO

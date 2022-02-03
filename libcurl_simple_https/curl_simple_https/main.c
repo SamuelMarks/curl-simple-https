@@ -45,6 +45,8 @@ int main(int argc, char *argv[]) {
                     args.url = argv[1];
                 else if (is_url(argv[argc - 1]))
                     args.url = argv[argc - 1];
+                else
+                    return EXIT_FAILURE;
         }
     }
 

@@ -1,0 +1,14 @@
+FROM debian
+
+ADD 'https://github.com/Kitware/CMake/releases/download/v3.22.2/cmake-3.22.2-linux-x86_64.sh' '/tmp/cmake.sh'
+
+RUN sh /tmp/cmake.sh --prefix='/usr/local' --skip-license && \
+    apt-get update -qq && \
+    apt-get install -y gcc make pkg-config libc-dev libcurl4-openssl-dev
+
+COPY . /curl-simple-https
+
+WORKDIR /curl-simple-https/build
+
+RUN cmake -DCMAKE_BUILD_TYPE="Debug" .. && \
+    cmake --build .

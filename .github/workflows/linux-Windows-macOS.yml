@@ -1,0 +1,62 @@
+name: Linux, Windows, macOS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    name: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies for macOS
+        run: brew install curl
+        if: matrix.os == 'macos-latest'
+
+      - name: Install dependencies for macOS
+        run: brew install curl
+        if: matrix.os == 'macos-latest'
+
+      - name: mkdir
+        run: mkdir build
+
+      - name: configure
+        working-directory: ./build
+        run: cmake -DCMAKE_BUILD_TYPE="Debug" ..
+        if: matrix.os != 'windows-latest'
+
+      - name: checkout vcpkg
+        uses: actions/checkout@v2
+        with:
+          repository: "microsoft/vcpkg"
+          ref: d8d61c941c333a147edffdcbdc9964dc0c0962f5
+          path: vcpkg
+        if: matrix.os == 'windows-latest'
+
+      - name: "Setup vcpkg (Windows)"
+        run: ./vcpkg/bootstrap-vcpkg.bat
+        if: matrix.os == 'windows-latest'
+
+      - name: configure (with vcpkg on Windows)
+        working-directory: ./build
+        run: |
+          cmake -DCMAKE_TOOLCHAIN_FILE="vcpkg\scripts\buildsystems\vcpkg.cmake" ..
+        shell: cmd
+        if: matrix.os == 'windows-latest'
+
+      - name: build
+        working-directory: ./build
+        run: cmake --build .
+
+#      - name: test
+#        working-directory: ./build
+#        run: ctest -C Debug .

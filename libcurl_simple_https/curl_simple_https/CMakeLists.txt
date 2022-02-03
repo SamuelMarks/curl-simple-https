@@ -21,7 +21,6 @@ set(LIBRARY_NAME "${EXEC_NAME}_lib")
 add_library("${LIBRARY_NAME}" "${Header_Files}" "${Source_Files}")
 
 target_link_libraries("${LIBRARY_NAME}" INTERFACE "${PROJECT_LOWER_NAME}_compiler_flags")
-target_link_libraries("${LIBRARY_NAME}" PUBLIC "libcurl_simple_https")
 
 set_target_properties(
         "${LIBRARY_NAME}"
@@ -35,15 +34,18 @@ set_target_properties(
 ###############################
 
 add_executable("${EXEC_NAME}" "main.c")
-
-target_link_libraries("${EXEC_NAME}" INTERFACE "${PROJECT_LOWER_NAME}_compiler_flags")
-
-target_link_libraries("${EXEC_NAME}" PRIVATE "${LIBRARY_NAME}")
 target_include_directories(
         "${LIBRARY_NAME}"
-        PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_LIBRARY_OUTPUT_DIRECTORY}>"
+        PRIVATE
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
         "$<INSTALL_INTERFACE:include>"
+)
+target_link_libraries(
+        "${EXEC_NAME}"
+        PRIVATE
+        "${PROJECT_LOWER_NAME}_compiler_flags"
+        "${LIBRARY_NAME}"
+        "${LIBRARY_NAME_0}"
 )
 
 set_target_properties(
@@ -57,12 +59,8 @@ set_target_properties(
 # Export / installation configuration #
 #######################################
 
-set(_export_file "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}_export.h")
+set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
 generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
-
-# setup the version numbering
-set_property(TARGET "${EXEC_NAME}" PROPERTY VERSION "1.0.0")
-set_property(TARGET "${EXEC_NAME}" PROPERTY SOVERSION "1")
 
 # install rules
 set(installable_libs "${EXEC_NAME}" "${PROJECT_LOWER_NAME}_compiler_flags")

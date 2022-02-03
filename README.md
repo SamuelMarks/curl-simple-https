@@ -1,6 +1,6 @@
 curl-simple-https
 =================
-[![build and test](https://github.com/SamuelMarks/curl-simple-https/actions/workflows/build-and-test.yml/badge.svg)](https://github.com/SamuelMarks/curl-simple-https/actions/workflows/build-and-test.yml)
+[![CI for Linux, Windows, macOS](https://github.com/SamuelMarks/curl-simple-https/actions/workflows/linux-Windows-macOS.yml/badge.svg)](https://github.com/SamuelMarks/curl-simple-https/actions/workflows/linux-Windows-macOS.yml)
 [![License](https://img.shields.io/badge/license-Apache--2.0%20OR%20MIT-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Very simple HTTPS interface built atop libcurl. It's based off a few [examples in libcurl's docs](https://curl.se/libcurl/c/example.html).

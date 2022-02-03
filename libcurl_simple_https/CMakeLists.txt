@@ -1,8 +1,6 @@
 get_filename_component(LIBRARY_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 string(REPLACE " " "_" LIBRARY_NAME "${LIBRARY_NAME}")
 
-include(GenerateExportHeader)
-
 set(Header_Files "curl_simple_https.h")
 source_group("Header Files" FILES "${Header_Files}")
 
@@ -13,7 +11,10 @@ add_library("${LIBRARY_NAME}" "${LIBRARY_TYPE_FLAG}" "${Header_Files}" "${Source
 target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+        "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>"
+        "$<INSTALL_INTERFACE:include>"
 )
 
 if (MSVC)
@@ -38,7 +39,7 @@ set_target_properties(
 )
 
 include(GenerateExportHeader)
-set(_export_file "${CMAKE_CURRENT_SOURCE_DIR}/${LIBRARY_NAME}_export.h")
+set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
 generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
 
 # setup the version numbering
@@ -53,4 +54,4 @@ endif ()
 install(TARGETS ${installable_libs}
         DESTINATION "bin"
         EXPORT "${LIBRARY_NAME}Targets")
-install(FILES "${_export_file}" "${Header_Files}" DESTINATION "include")
+install(FILES "${_export_file}" ${Header_Files} DESTINATION "include")

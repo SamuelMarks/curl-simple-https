@@ -1,9 +1,0 @@
-#ifndef CurlSimpleHttps_CONFIG_H
-#define CurlSimpleHttps_CONFIG_H
-
-#define CurlSimpleHttps_VERSION_MAJOR @CurlSimpleHttps_VERSION_MAJOR@
-#define CurlSimpleHttps_VERSION_MINOR @CurlSimpleHttps_VERSION_MINOR@
-#define CurlSimpleHttps_VERSION_PATCH @CurlSimpleHttps_VERSION_PATCH@
-#define CurlSimpleHttps_VERSION       "@CurlSimpleHttps_VERSION@"
-
-#endif /* !CurlSimpleHttps_CONFIG_H */

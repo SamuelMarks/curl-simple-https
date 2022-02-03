@@ -27,7 +27,7 @@ target_include_directories(
         "$<INSTALL_INTERFACE:include>"
 )
 
-target_link_libraries("${LIBRARY_NAME}" INTERFACE "${PROJECT_LOWER_NAME}_compiler_flags")
+target_link_libraries("${LIBRARY_NAME}" INTERFACE "${PROJECT_NAME}_compiler_flags")
 
 set_target_properties(
         "${LIBRARY_NAME}"
@@ -50,9 +50,9 @@ target_include_directories(
 target_link_libraries(
         "${EXEC_NAME}"
         PRIVATE
-        "${PROJECT_LOWER_NAME}_compiler_flags"
+        "${PROJECT_NAME}_compiler_flags"
         "${LIBRARY_NAME}"
-        "${LIBRARY_NAME_0}"
+        "${PROJECT_NAME}"
 )
 
 set_target_properties(
@@ -70,7 +70,7 @@ set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
 generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
 
 # install rules
-set(installable_libs "${EXEC_NAME}" "${PROJECT_LOWER_NAME}_compiler_flags")
+set(installable_libs "${EXEC_NAME}" "${PROJECT_NAME}_compiler_flags")
 if (TARGET "${DEPENDANT_LIBRARY}")
     list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
 endif ()

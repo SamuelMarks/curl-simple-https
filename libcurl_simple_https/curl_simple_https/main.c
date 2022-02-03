@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include <curl_simple_https.h>
-#include <CurlSimpleHttpsConfig.h>
+#include <libcurl_simple_httpsConfig.h>
 #include "cli.h"
 
 bool is_url(const char *maybe_url) {
@@ -27,7 +27,7 @@ struct ServerResponse (*get_simple_curl_function(const struct DocoptArgs *args))
 
 
 int main(int argc, char *argv[]) {
-    struct DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ CurlSimpleHttps_VERSION);
+    struct DocoptArgs args = docopt(argc, argv, /* help */ 1, /* version */ LIBCURL_SIMPLE_HTTPS_VERSION);
     CURLUcode rc;
     CURLU *url;
 

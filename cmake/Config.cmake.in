@@ -1,0 +1,4 @@
+
+@PACKAGE_INIT@
+
+include ( "${CMAKE_CURRENT_LIST_DIR}/libcurl_simple_httpsTargets.cmake" )

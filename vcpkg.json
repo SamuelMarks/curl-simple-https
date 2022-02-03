@@ -1,5 +1,5 @@
 {
-  "name": "libcurl_simple_https",
+  "name": "libcurl-simple-https",
   "version-string": "0.0.1",
   "dependencies": [
     "curl"

@@ -1,5 +1,30 @@
-function(get_curl LINK_LIBRARIES)
+#[=======================================================================[
+
+get_curl
+--------
+
+Function to get the curl link libraries from various places on the host system
+
+Usage
+^^^^^
+
+Arguments:
+
+LINK_LIBRARIES
+    Replace this argument with the link library name itself (pass by reference)
+
+]=======================================================================]
+
+function (get_curl LINK_LIBRARIES)
     set(CURL_NO_OLDIES ON)
+
+    if (VCPKG_TOOLCHAIN)  # Overly specific, should be same for conan, Buckaroo, Hunter, &etc.
+        find_package(CURL CONFIG QUIET)
+        if (CURL_FOUND)
+            set("${LINK_LIBRARIES}" "CURL::libcurl" PARENT_SCOPE)
+            return()
+        endif (CURL_FOUND)
+    endif (VCPKG_TOOLCHAIN)
 
     # curl version >=7.57 can have config files
     find_package(CURL QUIET COMPONENTS libcurl CONFIG)
@@ -12,7 +37,7 @@ function(get_curl LINK_LIBRARIES)
         if (CURL_VERSION VERSION_LESS 7.61.1 AND LIBCURL_TYPE STREQUAL "STATIC_LIBRARY")
             set_target_properties(CURL::libcurl PROPERTIES
                     INTERFACE_COMPILE_DEFINITIONS CURL_STATICLIB)
-        endif ()
+        endif (CURL_VERSION VERSION_LESS 7.61.1 AND LIBCURL_TYPE STREQUAL "STATIC_LIBRARY")
     else ()
         # try to use libcurl.pc if installed
         set(CMAKE_FIND_LIBRARY_PREFIXES ${CMAKE_FIND_LIBRARY_PREFIXES} lib)
@@ -28,8 +53,8 @@ function(get_curl LINK_LIBRARIES)
                             HINTS "${CURL_LIBDIR}" NO_DEFAULT_PATH)
                     if (NOT CURL_LINK_LIBRARIES)
                         message(FATAL_ERROR "curl is not installed; install libcurl then try again")
-                    endif ()
-                endif ()
+                    endif (NOT CURL_LINK_LIBRARIES)
+                endif (NOT CURL_LINK_LIBRARIES)
                 if (NOT CURL_LINK_LIBRARIES MATCHES "_imp.lib$|${CMAKE_SHARED_LIBRARY_SUFFIX}$")
                     list(REMOVE_ITEM CURL_STATIC_LIBRARIES ${CURL_LIBRARIES})
                     add_library(CURL::libcurl STATIC IMPORTED)
@@ -53,8 +78,8 @@ function(get_curl LINK_LIBRARIES)
                     endif ()
                 endif ()
                 message(STATUS "Using ${CURL_LIBRARIES} v${CURL_VERSION}")
-            endif ()
-        endif ()
+            endif (CURL_FOUND)
+        endif (PkgConfig_FOUND)
         # try old module from CMake distribution
         if (NOT CURL_FOUND)
             find_package(CURL REQUIRED COMPONENTS libcurl MODULE)
@@ -78,12 +103,12 @@ function(get_curl LINK_LIBRARIES)
                 endif ()
             endif ()
             set(CURL_VERSION ${CURL_VERSION_STRING})
-        endif ()
+        endif (NOT CURL_FOUND)
     endif ()
 
     if (NOT CURL_FOUND)
         message(FATAL_ERROR "curl is not installed; install libcurl then try again")
-    endif ()
+    endif (NOT CURL_FOUND)
 
-    set(${LINK_LIBRARIES} "${CURL_LINK_LIBRARIES}" PARENT_SCOPE)
-endfunction()
+    set("${LINK_LIBRARIES}" "${CURL_LINK_LIBRARIES}" PARENT_SCOPE)
+endfunction (get_curl LINK_LIBRARIES)

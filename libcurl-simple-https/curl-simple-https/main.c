@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include <curl_simple_https.h>
-#include <libcurl_simple_httpsConfig.h>
+#include <libcurl-simple-httpsConfig.h>
 #include "cli.h"
 
 bool is_url(const char *maybe_url) {

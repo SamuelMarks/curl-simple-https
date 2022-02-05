@@ -7,7 +7,7 @@ extern "C" {
 
 #include <curl/curl.h>
 
-#include "libcurl_simple_https_export.h"
+#include "libcurl-simple-https_export.h"
 
 struct ServerResponse {
     CURLcode code;

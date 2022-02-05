@@ -46,13 +46,13 @@ struct Tokens {
 
 const char usage_pattern[] =
         "Usage:\n"
-        "  curl_simple_https <url>...\n"
-        "  curl_simple_https POST <url>...\n"
-        "  curl_simple_https GET <url>...\n"
-        "  curl_simple_https PUT <url>...\n"
-        "  curl_simple_https --json <url>...\n"
-        "  curl_simple_https --help\n"
-        "  curl_simple_https --version";
+        "  curl-simple-https <url>...\n"
+        "  curl-simple-https POST <url>...\n"
+        "  curl-simple-https GET <url>...\n"
+        "  curl-simple-https PUT <url>...\n"
+        "  curl-simple-https --json <url>...\n"
+        "  curl-simple-https --help\n"
+        "  curl-simple-https --version";
 
 struct Tokens tokens_new(int argc, char **argv) {
     struct Tokens ts;
@@ -282,16 +282,16 @@ struct DocoptArgs docopt(int argc, char *argv[], const bool help, const char *ve
     struct DocoptArgs args = {
         NULL, NULL, NULL, NULL, 0, 0, 0,
             usage_pattern,
-            { "curl_simple_https: Simpler curl interface that only does HTTPS and has secure defaults",
+            { "curl-simple-https: Simpler curl interface that only does HTTPS and has secure defaults",
               "",
               "Usage:",
-              "  curl_simple_https <url>...",
-              "  curl_simple_https POST <url>...",
-              "  curl_simple_https GET <url>...",
-              "  curl_simple_https PUT <url>...",
-              "  curl_simple_https --json <url>...",
-              "  curl_simple_https --help",
-              "  curl_simple_https --version",
+              "  curl-simple-https <url>...",
+              "  curl-simple-https POST <url>...",
+              "  curl-simple-https GET <url>...",
+              "  curl-simple-https PUT <url>...",
+              "  curl-simple-https --json <url>...",
+              "  curl-simple-https --help",
+              "  curl-simple-https --version",
               "",
               "Options:",
               "  -h --help               Show this screen.",

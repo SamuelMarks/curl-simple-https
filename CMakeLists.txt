@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(libcurl_simple_https VERSION 0.0.1 LANGUAGES C)
+project(libcurl-simple-https VERSION 0.0.1 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 90)
 cmake_policy(SET CMP0063 NEW)
@@ -38,7 +38,7 @@ configure_file(
 add_subdirectory("${PROJECT_NAME}")
 option(BUILD_CLI "Build curl_simple_https CLI" ON)
 if (BUILD_CLI)
-    add_subdirectory("${PROJECT_NAME}/curl_simple_https")
+    add_subdirectory("${PROJECT_NAME}/curl-simple-https")
 endif (BUILD_CLI)
 
 install(

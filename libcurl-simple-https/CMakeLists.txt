@@ -21,7 +21,7 @@ if (MSVC)
   find_package(CURL CONFIG REQUIRED)
   set(CURL_LINK_LIBRARIES CURL::libcurl)
 else ()
-  include(../cmake/modules/FindCurlCustom.cmake)
+  include(${CMAKE_SOURCE_DIR}/cmake/modules/FindCurlCustom.cmake)
   get_curl(CURL_LINK_LIBRARIES)
 endif ()
 
@@ -52,6 +52,7 @@ if (TARGET "${DEPENDANT_LIBRARY}")
   list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
 endif ()
 install(TARGETS ${installable_libs}
-        DESTINATION "bin"
+        DESTINATION "lib"
         EXPORT "${LIBRARY_NAME}Targets")
 install(FILES "${_export_file}" ${Header_Files} DESTINATION "include")
+install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "share/${LIBRARY_NAME}")

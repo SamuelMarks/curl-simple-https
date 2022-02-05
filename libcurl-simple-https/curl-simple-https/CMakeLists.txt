@@ -23,7 +23,7 @@ add_library("${LIBRARY_NAME}" "${Header_Files}" "${Source_Files}")
 target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC
-        "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
+        "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${PROJECT_NAME}>"
         "$<INSTALL_INTERFACE:include>"
 )
 

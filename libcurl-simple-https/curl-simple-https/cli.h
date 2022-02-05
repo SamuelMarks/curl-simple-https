@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include "curl_simple_https_lib_export.h"
+#include "libcurl-simple-https_export.h"
 
 #if defined(__STDC__) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 
@@ -100,6 +100,6 @@ struct DocoptArgs {
     const char *help_message[15];
 };
 
-struct DocoptArgs CURL_SIMPLE_HTTPS_LIB_EXPORT docopt(int, char *[], bool, const char *);
+struct DocoptArgs LIBCURL_SIMPLE_HTTPS_EXPORT docopt(int, char *[], bool, const char *);
 
 #endif

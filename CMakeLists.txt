@@ -81,4 +81,5 @@ write_basic_package_version_file(
         VERSION "${${PROJECT_NAME}_VERSION_MAJOR}.${${PROJECT_NAME}_VERSION_MINOR}"
         COMPATIBILITY AnyNewerVersion
 )
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake" DESTINATION "share/${LIBRARY_NAME}")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+        DESTINATION "share/${PROJECT_NAME}/${LIBRARY_NAME}")

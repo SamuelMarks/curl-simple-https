@@ -34,7 +34,7 @@ Or do the same with your system package manager, `conan`, or whatever else you u
 
 If you want to change the CLI options, note that they are generated with `docopt`, use `python -m pip install docopt-c` then:
 ```bash
-$ python -m docopt_c ".docopt" -o "libcurl_simple_https/curl_simple_https/cli"
+$ python -m docopt_c ".docopt" -o "libcurl-simple-https/curl_simple_https/cli"
 ```
 
 ## Usage

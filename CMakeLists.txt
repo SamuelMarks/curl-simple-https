@@ -41,11 +41,12 @@ if (BUILD_CLI)
     add_subdirectory("${PROJECT_NAME}/curl-simple-https")
 endif (BUILD_CLI)
 
+include(GNUInstallDirs)
+
 install(
         FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.h"
-        DESTINATION "include"
+        TYPE "INCLUDE"
 )
-
 include(InstallRequiredSystemLibraries)
 set(CPACK_BUNDLE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VENDOR "SamuelMarks")
@@ -70,7 +71,7 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Config.cmake.in"
         "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        INSTALL_DESTINATION "share/${PROJECT_NAME}"
+        INSTALL_DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}"
         NO_SET_AND_CHECK_MACRO
         NO_CHECK_REQUIRED_COMPONENTS_MACRO
 )
@@ -82,4 +83,4 @@ write_basic_package_version_file(
         COMPATIBILITY AnyNewerVersion
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        DESTINATION "share/${PROJECT_NAME}/${LIBRARY_NAME}")
+        TYPE "DATA")

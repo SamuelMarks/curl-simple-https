@@ -47,12 +47,14 @@ set_property(TARGET "${LIBRARY_NAME}" PROPERTY VERSION "1.0.0")
 set_property(TARGET "${LIBRARY_NAME}" PROPERTY SOVERSION "1")
 
 # install rules
-set(installable_libs "${LIBRARY_NAME}" "${PROJECT_NAME}_compiler_flags")
+include(GNUInstallDirs)
+set(installable_libs "${LIBRARY_NAME}")
 if (TARGET "${DEPENDANT_LIBRARY}")
   list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
 endif (TARGET "${DEPENDANT_LIBRARY}")
 install(TARGETS ${installable_libs}
-        DESTINATION "lib"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}"
         EXPORT "${LIBRARY_NAME}Targets")
-install(FILES "${_export_file}" ${Header_Files} DESTINATION "include")
-install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "share/${LIBRARY_NAME}")
+install(FILES "${_export_file}" ${Header_Files}
+        TYPE "INCLUDE")
+install(EXPORT "${LIBRARY_NAME}Targets" DESTINATION "${CMAKE_INSTALL_DATADIR}/${LIBRARY_NAME}")

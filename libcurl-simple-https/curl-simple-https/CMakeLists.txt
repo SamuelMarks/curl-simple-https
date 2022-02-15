@@ -70,10 +70,13 @@ set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
 generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
 
 # install rules
-set(installable_libs "${EXEC_NAME}" "${PROJECT_NAME}_compiler_flags")
+include(GNUInstallDirs)
+set(installable_libs "${EXEC_NAME}")
 if (TARGET "${DEPENDANT_LIBRARY}")
     list(APPEND installable_libs "${DEPENDANT_LIBRARY}")
 endif ()
+install(FILES "${_export_file}" ${Header_Files}
+        TYPE "INCLUDE")
 install(TARGETS ${installable_libs}
-        DESTINATION "bin"
+        DESTINATION "${CMAKE_INSTALL_BINDIR}"
         EXPORT "${EXEC_NAME}Targets")

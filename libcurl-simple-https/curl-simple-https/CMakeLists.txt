@@ -78,5 +78,7 @@ endif ()
 install(FILES "${_export_file}" ${Header_Files}
         TYPE "INCLUDE")
 install(TARGETS ${installable_libs}
-        DESTINATION "${CMAKE_INSTALL_BINDIR}"
-        EXPORT "${EXEC_NAME}Targets")
+        EXPORT "${EXEC_NAME}Targets"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")

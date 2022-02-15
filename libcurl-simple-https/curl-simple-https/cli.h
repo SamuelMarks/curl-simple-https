@@ -5,7 +5,8 @@
 
 #include "libcurl-simple-https_export.h"
 
-#if defined(__STDC__) && defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#if defined(__STDC__) && defined(__STDC_VERSION__) &&                          \
+    __STDC_VERSION__ >= 199901L
 
 #include <stdbool.h>
 
@@ -35,9 +36,9 @@ typedef size_t bool;
 #include <sys/limits.h>
 
 #elif defined(__FreeBSD__) || defined(__NetBSD__)
-|| defined(__OpenBSD__) || defined(__bsdi__)
-|| defined(__DragonFly__) || defined(macintosh)
-|| defined(__APPLE__) || defined(__APPLE_CC__)
+|| defined(__OpenBSD__) || defined(__bsdi__) || defined(__DragonFly__) ||
+    defined(macintosh) || defined(__APPLE__) ||
+    defined(__APPLE_CC__)
 
 #include <sys/syslimits.h>
 
@@ -49,18 +50,21 @@ typedef size_t bool;
 
 #include <linux/version.h>
 
-#if LINUX_VERSION_CODE <= KERNEL_VERSION(2,6,22)
+#if LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 22)
 
 #include <linux/limits.h>
 
 #else
 
-#define ARG_MAX       131072    /* # bytes of args + environ for exec() */
-/* it's no longer defined, see this example and more at https://unix.stackexchange.com/q/120642 */
+#define ARG_MAX 131072 /* # bytes of args + environ for exec() */
+/* it's no longer defined, see this example and more at
+ * https://unix.stackexchange.com/q/120642 */
 
 #endif
 
-#elif (defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__)  || defined(__DragonFly__) || defined(macintosh) || defined(__APPLE__) || defined(__APPLE_CC__))
+#elif (defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) ||  \
+       defined(__bsdi__) || defined(__DragonFly__) || defined(macintosh) ||    \
+       defined(__APPLE__) || defined(__APPLE_CC__))
 
 #include <sys/param.h>
 
@@ -85,21 +89,22 @@ typedef size_t bool;
 #endif
 
 struct DocoptArgs {
-    
-    /* arguments */
-    char *url;
-    char *GET;
-    char *POST;
-    char *PUT;
-    /* options without arguments */
-    size_t help;
-    size_t json;
-    size_t version;
-    /* special */
-    const char *usage_pattern;
-    const char *help_message[15];
+
+  /* arguments */
+  char *url;
+  char *GET;
+  char *POST;
+  char *PUT;
+  /* options without arguments */
+  size_t help;
+  size_t json;
+  size_t version;
+  /* special */
+  const char *usage_pattern;
+  const char *help_message[15];
 };
 
-struct DocoptArgs LIBCURL_SIMPLE_HTTPS_EXPORT docopt(int, char *[], bool, const char *);
+struct DocoptArgs LIBCURL_SIMPLE_HTTPS_EXPORT docopt(int, char *[], bool,
+                                                     const char *);
 
 #endif

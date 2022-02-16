@@ -83,4 +83,4 @@ write_basic_package_version_file(
         COMPATIBILITY AnyNewerVersion
 )
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-        TYPE "DATA")
+        DESTINATION "${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}")

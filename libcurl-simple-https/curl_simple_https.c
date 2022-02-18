@@ -80,7 +80,6 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   struct MemoryStruct chunk;
   CURLcode res = CURLE_OK;
   CURL *curl;
-  struct WriteThis wt;
 
   chunk.memory = calloc(1, sizeof(char)); /* will be grown as needed by realloc above */
   chunk.size = 0;           /* no data at this point */
@@ -104,17 +103,11 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
-  printf("body: \"%s\"\n", body == NULL? "(NULL)" : body);
   if (body != NULL) {
+    struct WriteThis wt;
     /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
     wt.sizeleft = strlen(body);
-    curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
-    curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
-    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
-  } else {
-    wt.readptr = NULL;
-    wt.sizeleft = 0;
     curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);

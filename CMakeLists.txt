@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 project(libcurl-simple-https VERSION 0.0.1 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 90)

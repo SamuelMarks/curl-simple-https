@@ -82,7 +82,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   CURL *curl;
   struct WriteThis wt;
 
-  chunk.memory = malloc(1); /* will be grown as needed by realloc above */
+  chunk.memory = calloc(1, sizeof(char)); /* will be grown as needed by realloc above */
   chunk.size = 0;           /* no data at this point */
 
   /* TODO: Stop calling this all the time */
@@ -93,19 +93,21 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   if (!curl) {
     fprintf(stderr, "curl_easy_init() failed: %s\n", curl_easy_strerror(res));
     result.code = CURLE_FAILED_INIT;
-    goto cleanup;
+    curl_global_cleanup();
+    return result;
   }
 
   curl_easy_setopt(curl, CURLOPT_CURLU, urlp);
   curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
   curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  // curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+  /* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
   if (body != NULL) {
-    // curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body);
+    /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
+    printf("body: \"%s\"\n", body);
     wt.sizeleft = strlen(body);
     curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
@@ -128,6 +130,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   printf("curl_easy_perform res: %d\n", res);
   _res_error_handle;
 
+  printf("chunk.size: %ld\n", chunk.size);
   result.body = chunk.memory;
   {
     long response_code;

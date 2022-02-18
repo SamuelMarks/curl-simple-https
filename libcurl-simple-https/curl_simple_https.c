@@ -100,14 +100,14 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   curl_easy_setopt(curl, CURLOPT_CURLU, urlp);
   curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
   curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  /* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
+  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+  printf("body: \"%s\"\n", body == NULL? "(NULL)" : body);
   if (body != NULL) {
     /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
-    printf("body: \"%s\"\n", body);
     wt.sizeleft = strlen(body);
     curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);

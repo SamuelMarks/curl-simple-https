@@ -95,6 +95,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
     curl_global_cleanup();
     return result;
   }
+  puts("curl_easy_init");
 
   curl_easy_setopt(curl, CURLOPT_CURLU, urlp);
   curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
@@ -105,6 +106,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
   if (body != NULL) {
     struct WriteThis wt;
+    puts("body != NULL");
     /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
     wt.sizeleft = strlen(body);
@@ -112,10 +114,14 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
   }
-  if (headers != NULL)
-    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-  if (curl_modifier != NULL)
-    curl_modifier(curl);
+  if (headers != NULL) {
+      puts("headers != NULL");
+      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+  }
+  if (curl_modifier != NULL) {
+      puts("curl_modifier != NULL");
+      curl_modifier(curl);
+  }
 
   debug_request(urlp, body, headers);
 
@@ -154,7 +160,7 @@ void debug_request(CURLU *urlp, const char *body, struct curl_slist *headers) {
     for (; item->next; item = item->next)
       puts(item->next->data);
   }
-  printf("\nBODY:\n%s\n", body == NULL ? "(null)" : "");
+  printf("\nBODY:\n%s\n", body == NULL ? "(null)" : body);
 }
 
 CURL *make_request_post(CURL *curl) {

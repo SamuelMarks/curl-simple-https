@@ -77,6 +77,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
 
   struct ServerResponse result = {CURLE_OK, NULL, 0L, NULL};
   struct MemoryStruct chunk;
+  struct WriteThis wt;
   CURLcode res = CURLE_OK;
   CURL *curl;
 
@@ -104,13 +105,18 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
   if (body != NULL) {
-    struct WriteThis wt;
     /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
     wt.sizeleft = strlen(body);
     curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
+  } else {
+      wt.readptr = NULL;
+      wt.sizeleft = 0;
+      curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
+      curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
+      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
   }
   if (headers != NULL)
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);

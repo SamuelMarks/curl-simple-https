@@ -151,8 +151,8 @@ cleanup:
 
 void debug_request(CURLU *urlp, const char *body, struct curl_slist *headers) {
   char *url;
-  assert(curl_url_get(urlp, CURLUPART_URL, &url, 0) == CURLE_OK);
-  printf("URL:\n%s\n", url);
+  if (curl_url_get(urlp, CURLUPART_URL, &url, 0) == CURLE_OK)
+      printf("URL:\n%s\n", url);
   puts("\nHEADERS:");
   if (headers == NULL)
     puts("(NULL)");

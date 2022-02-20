@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -100,13 +99,12 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   curl_easy_setopt(curl, CURLOPT_CURLU, urlp);
   curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
   curl_easy_setopt(curl, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-  curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+  /* curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L); */
   curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
   if (body != NULL) {
     struct WriteThis wt;
-    puts("body != NULL");
     /* curl_easy_setopt(curl, CURLOPT_POSTFIELDS, body); */
     wt.readptr = body;
     wt.sizeleft = strlen(body);
@@ -114,23 +112,16 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
   }
-  if (headers != NULL) {
-      puts("headers != NULL");
+  if (headers != NULL)
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-  }
-  if (curl_modifier != NULL) {
-      puts("curl_modifier != NULL");
+  if (curl_modifier != NULL)
       curl_modifier(curl);
-  }
 
-  puts("debug_request");
   debug_request(urlp, body, headers);
 
   res = curl_easy_perform(curl);
-  printf("curl_easy_perform res: %d\n", res);
   _res_error_handle;
 
-  printf("chunk.size: %ld\n", chunk.size);
   result.body = chunk.memory;
   {
     long response_code;

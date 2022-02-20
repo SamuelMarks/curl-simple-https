@@ -123,6 +123,7 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
       curl_modifier(curl);
   }
 
+  puts("debug_request");
   debug_request(urlp, body, headers);
 
   res = curl_easy_perform(curl);

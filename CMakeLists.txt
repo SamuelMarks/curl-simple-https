@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.12)
 project(libcurl-simple-https VERSION 0.0.1 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 90)
-cmake_policy(SET CMP0063 NEW)
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 

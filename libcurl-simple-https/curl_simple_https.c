@@ -81,8 +81,9 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
   CURLcode res = CURLE_OK;
   CURL *curl;
 
-  chunk.memory = calloc(1, sizeof(char)); /* will be grown as needed by realloc above */
-  chunk.size = 0;           /* no data at this point */
+  chunk.memory =
+      calloc(1, sizeof(char)); /* will be grown as needed by realloc above */
+  chunk.size = 0;              /* no data at this point */
 
   /* TODO: Stop calling this all the time */
   res = curl_global_init(CURL_GLOBAL_DEFAULT);
@@ -112,16 +113,16 @@ struct ServerResponse https_wrapper(CURLU *urlp, CURL *(*curl_modifier)(CURL *),
     curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
     curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
   } else {
-      wt.readptr = NULL;
-      wt.sizeleft = 0;
-      curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
-      curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
+    wt.readptr = NULL;
+    wt.sizeleft = 0;
+    curl_easy_setopt(curl, CURLOPT_READDATA, &wt);
+    curl_easy_setopt(curl, CURLOPT_READFUNCTION, read_callback);
+    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)wt.sizeleft);
   }
   if (headers != NULL)
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
   if (curl_modifier != NULL)
-      curl_modifier(curl);
+    curl_modifier(curl);
 
   debug_request(urlp, body, headers);
 
@@ -149,7 +150,7 @@ cleanup:
 void debug_request(CURLU *urlp, const char *body, struct curl_slist *headers) {
   char *url;
   if (curl_url_get(urlp, CURLUPART_URL, &url, 0) == CURLE_OK)
-      printf("URL:\n%s\n", url);
+    printf("URL:\n%s\n", url);
   puts("\nHEADERS:");
   if (headers == NULL)
     puts("(NULL)");
@@ -171,6 +172,11 @@ CURL *make_request_put(CURL *curl) {
   return curl;
 }
 
+CURL *make_request_delete(CURL *curl) {
+  curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+  return curl;
+}
+
 struct curl_slist *set_json_headers(struct curl_slist *headers) {
   headers = curl_slist_append(headers, "Expect:");
   headers = curl_slist_append(headers, "Accept: application/json");
@@ -179,9 +185,21 @@ struct curl_slist *set_json_headers(struct curl_slist *headers) {
   return headers;
 }
 
+/* HTTPS wrapper functions */
+
+struct ServerResponse https_get(CURLU *urlp, const char *ignore,
+                                struct curl_slist *headers) {
+  return https_wrapper(urlp, NULL, NULL, headers);
+}
+
 struct ServerResponse https_post(CURLU *urlp, const char *body,
                                  struct curl_slist *headers) {
   return https_wrapper(urlp, make_request_post, body, headers);
+}
+
+struct ServerResponse https_delete(CURLU *urlp, const char *body,
+                                   struct curl_slist *headers) {
+  return https_wrapper(urlp, make_request_delete, body, headers);
 }
 
 struct ServerResponse https_put(CURLU *urlp, const char *body,
@@ -189,9 +207,11 @@ struct ServerResponse https_put(CURLU *urlp, const char *body,
   return https_wrapper(urlp, make_request_put, body, headers);
 }
 
-struct ServerResponse https_get(CURLU *urlp, const char *ignore,
-                                struct curl_slist *headers) {
-  return https_wrapper(urlp, NULL, NULL, headers);
+/* JSON wrapper functions */
+
+struct ServerResponse https_json_get(CURLU *urlp, const char *ignore,
+                                     struct curl_slist *headers) {
+  return https_wrapper(urlp, NULL, NULL, set_json_headers(headers));
 }
 
 struct ServerResponse https_json_post(CURLU *urlp, const char *body,
@@ -205,7 +225,8 @@ struct ServerResponse https_json_put(CURLU *urlp, const char *body,
   return https_wrapper(urlp, make_request_put, body, set_json_headers(headers));
 }
 
-struct ServerResponse https_json_get(CURLU *urlp, const char *ignore,
-                                     struct curl_slist *headers) {
-  return https_wrapper(urlp, NULL, NULL, set_json_headers(headers));
+struct ServerResponse https_json_delete(CURLU *urlp, const char *body,
+                                        struct curl_slist *headers) {
+  return https_wrapper(urlp, make_request_delete, body,
+                       set_json_headers(headers));
 }

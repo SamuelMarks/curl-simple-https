@@ -48,6 +48,7 @@ const char usage_pattern[] = "Usage:\n"
                              "  curl-simple-https POST <url>...\n"
                              "  curl-simple-https GET <url>...\n"
                              "  curl-simple-https PUT <url>...\n"
+                             "  curl-simple-https DELETE <url>...\n"
                              "  curl-simple-https --json <url>...\n"
                              "  curl-simple-https --help\n"
                              "  curl-simple-https --version";
@@ -263,6 +264,8 @@ int elems_to_args(struct Elements *elements, struct DocoptArgs *args,
       args->POST = (char *)argument->value;
     } else if (strcmp(argument->name, "PUT") == 0) {
       args->PUT = (char *)argument->value;
+    } else if (strcmp(argument->name, "DELETE") == 0) {
+      args->DELETE = (char *)argument->value;
     }
   }
   return EXIT_SUCCESS;
@@ -288,6 +291,7 @@ struct DocoptArgs docopt(int argc, char *argv[], const bool help,
        "", "Usage:", "  curl-simple-https <url>...",
        "  curl-simple-https POST <url>...", "  curl-simple-https GET <url>...",
        "  curl-simple-https PUT <url>...",
+       "  curl-simple-https DELETE <url>...",
        "  curl-simple-https --json <url>...", "  curl-simple-https --help",
        "  curl-simple-https --version", "",
        "Options:", "  -h --help               Show this screen.",
@@ -297,7 +301,8 @@ struct DocoptArgs docopt(int argc, char *argv[], const bool help,
   struct Argument arguments[] = {{"<url>", NULL, NULL},
                                  {"GET", NULL, NULL},
                                  {"POST", NULL, NULL},
-                                 {"PUT", NULL, NULL}};
+                                 {"PUT", NULL, NULL},
+                                 {"DELETE", NULL, NULL}};
   struct Option options[] = {{"-h", "--help", 0, 0, NULL},
                              {NULL, "--json", 0, 0, NULL},
                              {NULL, "--version", 0, 0, NULL}};

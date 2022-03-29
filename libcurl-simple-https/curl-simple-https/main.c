@@ -30,6 +30,8 @@ struct ServerResponse (*get_simple_curl_function(
     return args->json ? https_json_post : https_post;
   else if (args->PUT)
     return args->json ? https_json_put : https_put;
+  else if (args->DELETE)
+    return args->json ? https_json_delete : https_delete;
   /*else if (args.GET)*/
   return args->json ? https_json_get : https_get;
 }

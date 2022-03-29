@@ -1,5 +1,4 @@
 get_filename_component(EXEC_NAME "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
-string(REPLACE " " "_" EXEC_NAME "${EXEC_NAME}")
 
 set(CMAKE_C_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
@@ -20,11 +19,12 @@ set(LIBRARY_NAME "${EXEC_NAME}_lib")
 
 add_library("${LIBRARY_NAME}" "${Header_Files}" "${Source_Files}")
 
+include(GNUInstallDirs)
 target_include_directories(
         "${LIBRARY_NAME}"
         PUBLIC
         "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/${PROJECT_NAME}>"
-        "$<INSTALL_INTERFACE:include>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 
 target_link_libraries("${LIBRARY_NAME}" INTERFACE "${PROJECT_NAME}_compiler_flags")
@@ -45,7 +45,7 @@ target_include_directories(
         "${LIBRARY_NAME}"
         PRIVATE
         "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>"
-        "$<INSTALL_INTERFACE:include>"
+        "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
 target_link_libraries(
         "${EXEC_NAME}"
@@ -70,7 +70,6 @@ set(_export_file "${CMAKE_CURRENT_BINARY_DIR}/${LIBRARY_NAME}_export.h")
 generate_export_header("${LIBRARY_NAME}" EXPORT_FILE_NAME "${_export_file}")
 
 # install rules
-include(GNUInstallDirs)
 set(installable_libs "${EXEC_NAME}")
 if (TARGET "${DEPENDANT_LIBRARY}")
     list(APPEND installable_libs "${DEPENDANT_LIBRARY}")

@@ -95,6 +95,7 @@ struct DocoptArgs {
   char *GET;
   char *POST;
   char *PUT;
+  char *DELETE;
   /* options without arguments */
   size_t help;
   size_t json;

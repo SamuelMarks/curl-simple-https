@@ -19,7 +19,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb,
   char *ptr = realloc(mem->memory, mem->size + realsize + 1);
   if (!ptr) {
     /* out of memory! */
-    fputs("not enough memory (realloc returned NULL)\n", stderr);
+    fputs("not enough memory (realloc returned NULL)", stderr);
     return 0;
   }
 
@@ -60,7 +60,8 @@ void debug_response(struct ServerResponse *response) {
   printf("body\n\n\"%s\"\n\n"
          "code\n\n%d\n\n"
          "status_code\n\n%ld\n\n",
-         (*response).body, (*response).code, (*response).status_code);
+         (*response).body == NULL ? "(null)" : (*response).body,
+         (*response).code, (*response).status_code);
 }
 
 void debug_request(CURLU *urlp, const char *body, struct curl_slist *headers);

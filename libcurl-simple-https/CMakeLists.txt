@@ -20,7 +20,7 @@ target_include_directories(
 
 if (MSVC)
   find_package(CURL CONFIG REQUIRED)
-  set(CURL_LINK_LIBRARIES CURL::libcurl)
+  set(CURL_LINK_LIBRARIES "CURL::libcurl")
 else ()
   include(${CMAKE_SOURCE_DIR}/cmake/modules/FindCurlCustom.cmake)
   get_curl(CURL_LINK_LIBRARIES)

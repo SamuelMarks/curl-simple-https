@@ -102,7 +102,7 @@ struct DocoptArgs {
   size_t version;
   /* special */
   const char *usage_pattern;
-  const char *help_message[15];
+  const char *help_message[16];
 };
 
 struct DocoptArgs LIBCURL_SIMPLE_HTTPS_EXPORT docopt(int, char *[], bool,

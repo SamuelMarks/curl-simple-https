@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cli.h"
 #include <curl_simple_https.h>
 #include <libcurl-simple-httpsConfig.h>
+
+#include "cli.h"
 
 bool is_url(const char *maybe_url) {
   if (strlen(maybe_url) < 8)
@@ -67,10 +68,10 @@ int main(int argc, char *argv[]) {
     struct ServerResponse response =
         get_simple_curl_function(&args)(url, NULL, NULL);
     /* debug_response(&response); */
-    puts(response.body);
+    puts(response.body == NULL ? "(null)" : response.body);
     curl_url_cleanup(url);
     return EXIT_SUCCESS;
-  } else {
-    return CURLE_OUT_OF_MEMORY;
   }
+  fprintf(stderr, "curl operation failed: %s\n", curl_url_strerror(rc));
+  return EXIT_FAILURE;
 }

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <libcurl-simple-httpsConfig.h>
+
 #include "cli.h"
 
 struct Command {
@@ -285,6 +287,9 @@ struct DocoptArgs docopt(int argc, char *argv[], const bool help,
       0,
       0,
       0,
+      LIBCURL_SIMPLE_HTTPS_VERSION_MAJOR * 10000 +
+          LIBCURL_SIMPLE_HTTPS_VERSION_MINOR * 100 +
+          LIBCURL_SIMPLE_HTTPS_VERSION_PATCH,
       usage_pattern,
       {"curl-simple-https: Simpler curl interface that only does HTTPS and has "
        "secure defaults",
